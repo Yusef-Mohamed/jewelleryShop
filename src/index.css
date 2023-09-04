@@ -1,0 +1,45 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+body {
+  font-family: "Open Sans", sans-serif;
+  letter-spacing: 1.2px;
+}
+.slick-arrow {
+  display: none !important;
+}
+.skeleton {
+  opacity: 0.7;
+  animation: skeletonLoading 1s linear infinite alternate;
+  -webkit-animation: skeletonLoading 1s linear infinite alternate;
+}
+@keyframes skeletonLoading {
+  0% {
+    background-color: #a3b8c2;
+  }
+  100% {
+    background-color: #f0f3f5;
+  }
+}
+p {
+  @apply leading-loose;
+  line-height: 1.7 !important;
+}
+.form {
+  @apply container mx-auto flex flex-col items-center justify-center min-h-[70vh];
+}
+.form form {
+  @apply border border-slate-300 p-6 rounded-xl shadow-lg min-w-[50%];
+}
+.form form h1 {
+  @apply text-2xl text-center font-semibold my-4;
+}
+.form form label {
+  @apply text-lg block my-3;
+}
+.form form input {
+  @apply border w-full py-2 px-4 rounded-xl border-slate-300 block;
+}
+.form form button {
+  @apply w-[50%] py-2 bg-blue text-white font-semibold my-4 mx-auto px-4 rounded-xl  block;
+}
