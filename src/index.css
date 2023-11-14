@@ -1,25 +1,12 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-body {
-  font-family: "Open Sans", sans-serif;
-  letter-spacing: 1.2px;
-}
+
 .slick-arrow {
   display: none !important;
 }
-.skeleton {
-  opacity: 0.7;
-  animation: skeletonLoading 1s linear infinite alternate;
-  -webkit-animation: skeletonLoading 1s linear infinite alternate;
-}
-@keyframes skeletonLoading {
-  0% {
-    background-color: #a3b8c2;
-  }
-  100% {
-    background-color: #f0f3f5;
-  }
+.container {
+  @apply px-6;
 }
 p {
   @apply leading-loose;
@@ -34,12 +21,144 @@ p {
 .form form h1 {
   @apply text-2xl text-center font-semibold my-4;
 }
-.form form label {
+.form form label,
+.formGroup label {
   @apply text-lg block my-3;
 }
-.form form input {
+.form form input,
+.form form textarea,
+.formGroup input,
+.formGroup select {
   @apply border w-full py-2 px-4 rounded-xl border-slate-300 block;
 }
-.form form button {
+.form form button,
+.formGroup button {
   @apply w-[50%] py-2 bg-blue text-white font-semibold my-4 mx-auto px-4 rounded-xl  block;
+}
+
+b {
+  display: block;
+}
+.customer button {
+  @apply mt-3;
+}
+.loader {
+  --dim: 3rem;
+  width: var(--dim);
+  height: var(--dim);
+  position: relative;
+  animation: spin988 1.5s linear infinite;
+  -webkit-animation: spin988 1.5s linear infinite;
+}
+.form-control {
+  width: 100% !important;
+}
+.loader .circle {
+  --color: white;
+  --dim: 1.2rem;
+  width: var(--dim);
+  height: var(--dim);
+  background-color: var(--color);
+  border-radius: 50%;
+  position: absolute;
+}
+
+.loader .circle:nth-child(1) {
+  top: 0;
+  left: 0;
+}
+
+.loader .circle:nth-child(2) {
+  top: 0;
+  right: 0;
+}
+
+.loader .circle:nth-child(3) {
+  bottom: 0;
+  left: 0;
+}
+
+.loader .circle:nth-child(4) {
+  bottom: 0;
+  right: 0;
+}
+
+@keyframes spin988 {
+  0% {
+    transform: scale(1) rotate(0);
+  }
+
+  20%,
+  25% {
+    transform: scale(1.3) rotate(90deg);
+  }
+
+  45%,
+  50% {
+    transform: scale(1) rotate(180deg);
+  }
+
+  70%,
+  75% {
+    transform: scale(1.3) rotate(270deg);
+  }
+
+  95%,
+  100% {
+    transform: scale(1) rotate(360deg);
+  }
+}
+.option {
+  text-align: center;
+  font-size: 10px;
+  display: block;
+  position: relative;
+  @apply w-32;
+}
+.option img {
+  @apply w-full mb-2 aspect-[2/1];
+}
+.myRadio {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  left: 0;
+  top: 0;
+  appearance: none;
+  cursor: pointer;
+}
+
+.radioContainer {
+  border-radius: 50px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  padding: 10px;
+}
+
+.myRadio:checked {
+  border: 2px solid #4a63e2;
+}
+.react-tel-input {
+  direction: ltr;
+}
+.mainbg {
+  background-image: url(./assets/main.webp);
+}
+.shipping-times .option input {
+  width: 100% !important;
+  height: 100% !important;
+  position: absolute;
+  left: 0;
+  top: 0;
+  border: none !important;
+  appearance: none;
+  cursor: pointer;
+}
+.shipping-times label {
+  @apply border border-blue rounded-xl hover:bg-blue transition-all;
+}
+.shipping-times input:checked + label {
+  @apply bg-blue text-white font-semibold;
 }

@@ -7,7 +7,7 @@ import { toast } from "react-hot-toast";
 function ResetPassword() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const { setIsLoading } = useContext(AppContext);
+  const { setIsLoading, lang } = useContext(AppContext);
 
   const nav = useNavigate();
   let handel = async function (e) {
@@ -32,9 +32,11 @@ function ResetPassword() {
   return (
     <div className="form">
       <form onSubmit={handel}>
-        <h1>Reset Password</h1>
+        <h1>{lang === "en" ? "Reset Password" : "تغيير كلمة المرور"}</h1>
         <div>
-          <label htmlFor="email">Email</label>
+          <label htmlFor="email">
+            {lang === "en" ? "Email" : "البريد الالكتروني"} : *
+          </label>
           <input
             type="email"
             onChange={(e) => setEmail(e.target.value)}
@@ -42,7 +44,9 @@ function ResetPassword() {
           />
         </div>
         <div>
-          <label htmlFor="password">Password</label>
+          <label htmlFor="password">
+            {lang === "en" ? "Password" : "كلمة المرور"} : *
+          </label>
           <input
             type="password"
             required
@@ -51,7 +55,7 @@ function ResetPassword() {
           />
         </div>
 
-        <button>Reset</button>
+        <button>{lang === "en" ? "Reset" : "تغيير"}</button>
       </form>
     </div>
   );

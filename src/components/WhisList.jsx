@@ -7,7 +7,7 @@ import { AiOutlineHeart } from "react-icons/ai";
 import WishCard from "./WishCard";
 const WhisList = () => {
   const token = localStorage.getItem("token");
-  const { wishList, setWishList, update } = useContext(AppContext);
+  const { wishList, lang, setWishList, update } = useContext(AppContext);
   const [isOpen, setIsOpen] = useState(false);
 
   useEffect(() => {
@@ -19,9 +19,9 @@ const WhisList = () => {
         setWishList(res.data.data);
       })
       .catch((err) => {
-        console.log(err);
         if (err?.response?.status === 401) {
-          localStorage.clear();
+          localStorage.removeItem("token");
+          localStorage.removeItem("data");
         } else if (err?.response?.status === 404) {
           setWishList([]);
         }
@@ -46,11 +46,13 @@ const WhisList = () => {
             setIsOpen(false);
           }}
         ></div>
-        <div className="bg-white p-6 flex flex-col gap-4 min-w-[30%]">
+        <div className="bg-white overflow-y-auto p-6 flex flex-col gap-4 sm:min-w-[40%] min-w-[80%]">
           <div className="flex justify-between items-center">
             <div className="flex gap-2 items-center">
               <AiOutlineHeart size={30} />
-              <h2 className="whitespace-nowrap font-semibold">Shopping cart</h2>
+              <h2 className="whitespace-nowrap font-semibold">
+                {lang === "en" ? "Whish List" : "القائمة المفضلة"}
+              </h2>
             </div>
             <button
               onClick={() => {

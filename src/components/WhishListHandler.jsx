@@ -24,7 +24,6 @@ const WhishListHandler = ({ prodcutId }) => {
           toast.success("product has been deleted");
           setUpdate((prev) => prev + 1);
         })
-        .catch((err) => console.log(err))
         .finally(() => setIsLoading(false));
     } else {
       axios
@@ -42,9 +41,10 @@ const WhishListHandler = ({ prodcutId }) => {
           setUpdate((prev) => prev + 1);
         })
         .catch((err) => {
-          console.log(err);
-          if (err.response.status == 401) {
+          if (err.response.status == 500 || err.response.status == 401) {
             toast.error("You must login before add items to wish list");
+            localStorage.removeItem("token");
+            localStorage.removeItem("data");
           }
         })
         .finally(() => {

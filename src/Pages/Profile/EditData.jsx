@@ -3,15 +3,19 @@ import { AppContext, route } from "../../App";
 import axios from "axios";
 import { toast } from "react-hot-toast";
 import { AiFillCloseCircle } from "react-icons/ai";
-
+import PhoneInput from "react-phone-input-2";
+import "react-phone-input-2/lib/style.css";
+import SelectCountries from "../../components/SelectCountries";
 const EditData = () => {
   const token = localStorage.getItem("token");
   const dataa = JSON.parse(localStorage.getItem("data"));
   const [isOpen, setIsOpen] = useState(false);
-  const { setIsLoading } = useContext(AppContext);
+  const { setIsLoading, lang } = useContext(AppContext);
   const [name, setName] = useState(dataa.name);
   const [profileImg, setProfileImg] = useState(null);
   const [phone, setPhone] = useState(dataa?.phone);
+  const [country, setCountry] = useState(dataa?.country);
+  const [isCountryOpen, setIsCountryOpen] = useState(false);
 
   const handleImageChange = (event) => {
     const file = event.target.files[0];
@@ -28,6 +32,9 @@ const EditData = () => {
     const formData = new FormData();
     if (name) {
       formData.append("name", name);
+    }
+    if (country) {
+      formData.append("country", country);
     }
     if (phone) {
       formData.append("phone", phone);
@@ -71,7 +78,7 @@ const EditData = () => {
                 <AiFillCloseCircle size={30} />
               </div>
               <div>
-                <label>Name :</label>
+                <label>{lang === "en" ? "Name" : "الاسم"}:</label>
                 <input
                   type="text"
                   required
@@ -80,25 +87,42 @@ const EditData = () => {
                 />
               </div>
               <div>
-                <label>Phone number :</label>
-                <input
-                  type="text"
-                  required
-                  minLength={10}
-                  onChange={(e) => setPhone(e.target.value)}
+                <label>{lang === "en" ? "Phone number" : "رقم الهاتف"}:</label>
+
+                <PhoneInput
+                  country={"eg"}
+                  className="w-full"
                   value={phone}
+                  onChange={(e) => setPhone(e)}
                 />
               </div>
               <div className="relative  w-full">
-                <label>Profile image :</label>
+                <label>
+                  {lang === "en" ? "Profile image" : "الصورة الشخصية"}:
+                </label>
                 <input
                   type="file"
                   onChange={handleImageChange}
                   placeholder="upload your image"
                 />
               </div>
-
-              <button type="submit">Edit</button>
+              <div>
+                <label>{lang === "en" ? "Country" : "الدولة"} : *</label>
+                <button
+                  className="w-full"
+                  type="button"
+                  onClick={() => setIsCountryOpen(true)}
+                  style={{ width: "100%" }}
+                >
+                  {country ? country : lang === "en" ? "Select" : "اختر"}
+                </button>
+                <SelectCountries
+                  onChange={setCountry}
+                  isOpen={isCountryOpen}
+                  setIsOpen={setIsCountryOpen}
+                />
+              </div>
+              <button type="submit">{lang === "en" ? "Edit" : "تعديل"}</button>
             </form>
           </div>
         </div>
@@ -108,7 +132,7 @@ const EditData = () => {
         onClick={() => setIsOpen(true)}
       >
         <i className="fa-solid fa-pen"></i>
-        Personal information
+        {lang === "en" ? "Edit Personal information" : "تعديل بياناتي الشخصية"}
       </div>
     </div>
   );

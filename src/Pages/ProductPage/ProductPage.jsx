@@ -10,18 +10,17 @@ import payIcon from "../../assets/pay.svg";
 import axios from "axios";
 import { AppContext, route } from "../../App";
 import { useParams } from "react-router";
-import { toast } from "react-hot-toast";
 import { IoIosArrowUp } from "react-icons/io";
+import HandelCart from "./HandelCart";
+import { BsStarFill, BsStarHalf } from "react-icons/bs";
 
 const ProductPage = () => {
-  const [quantity, setQuantity] = useState(1);
   const [showMore, setShowMore] = useState(false);
-  const { setIsLoading, cart, update, setUpdate } = useContext(AppContext);
-  const token = localStorage.getItem("token");
+  const { lang, setIsLoading, cart, update } = useContext(AppContext);
   const productId = useParams().productId;
   const [product, setProduct] = useState({});
   const [productInCart, setProductInCart] = useState({});
-
+  console.log(product);
   useEffect(() => {
     setIsLoading(true);
     axios
@@ -31,205 +30,147 @@ const ProductPage = () => {
       })
       .finally(() => setIsLoading(false));
   }, [productId]);
-
   // get current product from cart
   useEffect(() => {
     setProductInCart(
       cart?.cartItems?.filter((item) => item?.product?._id === productId)[0]
     );
-    console.log(productInCart);
-    if (productInCart?.quantity) {
-      setQuantity(productInCart?.quantity);
-    }
   }, [cart, update]);
-  const addToCart = function () {
-    setIsLoading(true);
-    if (productInCart?._id) {
-      axios
-        .put(
-          `${route}/api/v1/cart/${productInCart._id}`,
-          {
-            quantity: quantity,
-          },
-          {
-            headers: {
-              Authorization: "Bearer " + token,
-            },
-          }
-        )
-        .then((res) => {
-          toast.success("Prodcut quantity has been updated");
-          setUpdate((prev) => prev + 1);
-        })
-        .catch((err) => {
-          if (err.response.status == 401) {
-            toast.error("You must login before add items to Shoping Cart");
-            localStorage.clear();
-          }
-        })
-        .finally(() => setIsLoading(false));
-    } else {
-      axios
-        .post(
-          `${route}/api/v1/cart`,
-          {
-            productId: productId,
-            quantity: quantity,
-          },
-          {
-            headers: {
-              Authorization: "Bearer " + token,
-            },
-          }
-        )
-        .then((res) => {
-          console.log(res);
-          toast.success("Product in you cart now");
-          setUpdate((prev) => prev + 1);
-        })
-        .catch((err) => {
-          if (err.response.status == 401) {
-            toast.error("You must login before add items to Shoping Cart");
-            localStorage.clear();
-          }
-        })
-        .finally(() => setIsLoading(false));
-    }
-  };
-  const removeFromCart = function () {
-    setIsLoading(true);
-    axios
-      .delete(`${route}/api/v1/cart/${productInCart._id}`, {
-        headers: {
-          Authorization: "Bearer " + token,
-        },
-      })
-      .then(() => {
-        toast.success("Product deleted");
-        setUpdate((prev) => prev + 1);
-      })
-      .catch((err) => {
-        console.log(err);
-        if (err.response.status == 401) {
-          toast.error("You must login before add items to Shoping Cart");
-        }
-      })
-      .finally(() => setIsLoading(false));
-  };
+
   return (
     <>
-      <div className="flex  container mx-auto mix-blend-saturation">
-        <div className="p-4">
-          <img
-            src="https://jacobandco.shop/cdn/shop/t/2/assets/9214962843381x2254-1648758084998.jpg?v=1648758087"
-            alt=""
-          />
+      <div className="flex  flex-col lg:flex-row h-full lg:items-start">
+        <div className="w-full ">
+          {product.images ? (
+            <>
+              {[product.imageCover, ...product.images].map((e) => (
+                <img key={e} src={e} className="w-full" alt="" />
+              ))}
+            </>
+          ) : (
+            <>
+              {[product.imageCover].map((e) => (
+                <img key={e} src={e} className="w-full" alt="" />
+              ))}
+            </>
+          )}
         </div>
-        <div className="grid-cols-1 w-[350px] p-4">
+        <div className="lg:sticky lg:top-20 pr-20 pl-8 py-4 ">
           <div>
-            <h1 className="text-[25px] font-medium mb-2">{product?.title}</h1>
-            <h3 className="text-gray font-light  ">Short des here</h3>
+            <h1 className="text-[25px] font-medium mb-2">
+              {lang === "en" ? product?.title_en : product?.title_ar}
+            </h1>
+            <div className="flex gap-2 items-center ">
+              {product?.ratingsQuantity === 0 && <></>}
+              {product?.ratingsAverage && (
+                <>
+                  {[...Array(Math.floor(product?.ratingsAverage))].map(
+                    (_, index) => (
+                      <BsStarFill color="gold" key={index} />
+                    )
+                  )}
+                  {product?.ratingsAverage % 1 !== 0 && (
+                    <BsStarHalf color="gold" />
+                  )}
+                  {[...Array(5 - Math.ceil(product?.ratingsAverage))].map(
+                    (_, index) => (
+                      <BsStarFill color="black" key={index} />
+                    )
+                  )}
+                  ({product?.ratingsQuantity})
+                </>
+              )}
+            </div>
+            <h3 className="text-gray font-light">
+              {" "}
+              {lang === "en"
+                ? product?.shortDescription_en
+                : product?.shortDescription_ar}
+            </h3>
             <h2 className="text-[20px] font-medium">
               {product?.priceAfterDiscount ? (
                 <>
-                  <del className="text-rose-500">
-                    ${product?.priceAfterDiscount}
-                  </del>
-                  <span className="mx-2">${product?.price}</span>
+                  <del className="text-rose-500">${product?.price}</del>
+                  <span className="mx-2">${product?.priceAfterDiscount}</span>
                 </>
               ) : (
-                <>{product?.price}</>
+                <>${product?.price}</>
               )}
             </h2>
           </div>
-          <div>
-            <div className="my-4 flex gap-4 items-center">
-              Quantitiy
-              <div className="flex items-center gap-2">
-                {quantity > 1 && (
-                  <button
-                    className="w-6 rounded-md h-6 flex items-center justify-center text-white bg-[#d9d9d9]"
-                    onClick={() => setQuantity((prev) => prev - 1)}
-                  >
-                    -
-                  </button>
-                )}
-                <div className="w-6 rounded-md h-6 flex items-center justify-center border border-[#d1d5db] text-gray text-opacity-50">
-                  {quantity}
-                </div>
-                <button
-                  className="w-6 rounded-md h-6 flex items-center justify-center text-white bg-[#d9d9d9]"
-                  onClick={() => setQuantity((prev) => prev + 1)}
-                >
-                  +
-                </button>
-              </div>
-            </div>
-            {productInCart && (
-              <button
-                onClick={removeFromCart}
-                className="block w-[300px] py-[12px] text-white text-[19px] uppercase bg-rose-500 text-center"
-              >
-                Remove item from cart
-              </button>
-            )}
-            <button className="block w-[300px] my-4 py-[12px] text-white text-[19px] uppercase bg-blue text-center">
-              buy now
-            </button>
-            <button
-              onClick={addToCart}
-              className="block w-[300px] py-[12px] text-[19px] text-gray my-4 border border-[#d9d9d9] uppercase text-center"
-            >
-              {productInCart ? "Update product quantity" : "add to cart"}
-            </button>
-          </div>
+          <HandelCart productInCart={productInCart} product={product} />
           <div>
             <div className="flex items-center gap-2 my-4">
               <img src={handcraftedIcon} className="w-[30px]" alt="" />
               <p className="text-gray font-light ">
-                Handcrafted with excellence
+                {lang === "en"
+                  ? "Handcrafted with excellence"
+                  : "مصنوعة بإتقان يدويًا"}
               </p>
             </div>
             <div className="flex items-center gap-2 my-4">
               <img src={returnIcon} className="w-[30px]" alt="" />
-              <p className="text-gray font-light ">14 days return window </p>
+              <p className="text-gray font-light ">
+                {lang === "en"
+                  ? "14 days return window"
+                  : "نافذة إرجاع لمدة 14 يومًا"}
+              </p>
             </div>
             <div className="flex items-center gap-2 my-4">
               <img src={shipIcon} className="w-[30px]" alt="" />
-              <p className="text-gray font-light ">Ships globally</p>
+              <p className="text-gray font-light ">
+                {lang === "en"
+                  ? "Ships globally"
+                  : "يتم شحن المنتجات إلى جميع أنحاء العالم."}
+              </p>
             </div>
             <div className="flex items-center gap-2 my-4">
               <img src={warrantyIcon} className="w-[30px]" alt="" />
-              <p className="text-gray font-light ">1 year warranty</p>
+              <p className="text-gray font-light ">
+                {lang === "en" ? "1 year warranty" : "الضمان لمدة سنة"}
+              </p>
             </div>
           </div>
           <div>
-            <h2 className="text-lg">SIZE & MATERIAL</h2>
+            <h2 className="text-lg">
+              {lang === "en" ? "Highlights" : "نقاط بارزة"}
+            </h2>
             <ul>
-              <li className="text-gray text-opacity-50 my-2">Ref: 92253318</li>
-              <li className="text-gray text-opacity-50 my-2">
-                Metal: 18k Yellow Gold
-              </li>
-              <li className="text-gray text-opacity-50 my-2">Weight: 4.1g</li>
-              <li className="text-gray text-opacity-50 my-2">
-                Chain Length: 4.25
-              </li>
+              {lang === "en"
+                ? product?.highlights_en?.map((e) => (
+                    <li key={e} className="text-gray text-opacity-50 my-2">
+                      {e}
+                    </li>
+                  ))
+                : product?.highlights_ar?.map((e) => (
+                    <li key={e} className="text-gray text-opacity-50 my-2">
+                      {e}
+                    </li>
+                  ))}
             </ul>
           </div>
           <div>
-            <h2 className="text-lg">DESCRIPTION & DETAILS</h2>
+            <h2 className="text-lg">
+              {lang === "en" ? "DESCRIPTION & DETAILS" : "الوصف والتفاصيل"}
+            </h2>
             <p
               className={`transition-all text-gray text-opacity-50 my-2 ${
                 showMore ? "line-clamp-none" : "line-clamp-4"
               }`}
             >
-              {product?.description}
+              {lang === "en"
+                ? product?.description_en
+                : product?.description_ar}
             </p>
             <div
               className="flex gap-2 items-center"
               onClick={() => setShowMore((prev) => !prev)}
             >
-              Show {showMore ? "less" : "more"}
+              {lang === "en" ? (
+                <>Show {showMore ? "less" : "more"}</>
+              ) : (
+                <>اعرض {showMore ? "اقل" : "اكثر"}</>
+              )}
               <span
                 className={`transition-all ${
                   showMore ? "rotate-0" : "rotate-180"
@@ -245,31 +186,48 @@ const ProductPage = () => {
         <div className="container mx-auto sm:grid sm:grid-cols-2 md:grid-cols-4">
           <div className="text-center">
             <img src={shippingIcon} className="w-[35px] mx-auto my-4" alt="" />
-            <h4 className="font-semibold my-2">Complimentary Shipping</h4>
+            <h4 className="font-semibold my-2">
+              {lang === "en" ? "Complimentary Shipping" : "شحن مجاني"}
+            </h4>
             <p className="font-light text-sm text-gray text-opacity-60">
-              We offer complimentary shipping & returns on all orders.
+              {lang === "en"
+                ? "We offer complimentary shipping & returns on all orders."
+                : "نحن نقدم شحن مجاني وإمكانية الإرجاع على جميع الطلبات."}
             </p>
           </div>
           <div className="text-center">
             <img src={freeIcon} className="w-[35px] mx-auto my-4" alt="" />
-            <h4 className="font-semibold my-2">Free Returns & Exchanges</h4>
+            <h4 className="font-semibold my-2">
+              {lang === "en"
+                ? "Free Returns & Exchanges"
+                : "إرجاع وتبادل مجاني"}
+            </h4>
             <p className="font-light text-sm text-gray text-opacity-60">
-              Our client care experts are always here to help.
+              {lang === "en"
+                ? "Our client care experts are always here to help."
+                : "خبراؤنا في خدمة العملاء دائمًا متاحون هنا للمساعدة."}
             </p>
           </div>
           <div className="text-center">
             <img src={dimIcon} className="w-[35px] mx-auto my-4" alt="" />
-            <h4 className="font-semibold my-2">Ethically Sourced</h4>
+            <h4 className="font-semibold my-2">
+              {lang === "en" ? "Ethically Sourced" : "مصدرة بأخلاق"}
+            </h4>
             <p className="font-light text-sm text-gray text-opacity-60">
-              We proudly trace 100% of our rough diamonds to known mines and
-              sources.
+              {lang === "en"
+                ? "We proudly trace 100% of our rough diamonds to known mines and sources."
+                : "نحن بفخر نتتبع 100% من الماس الخام لدينا إلى المناجم والمصادر المعروفة."}
             </p>
           </div>
           <div className="text-center">
             <img src={payIcon} className="w-[35px] mx-auto my-4" alt="" />
-            <h4 className="font-semibold my-2">Pay With Affirm</h4>
+            <h4 className="font-semibold my-2">
+              {lang === "en" ? "Pay With Affirm" : "الدفع ب affirm"}
+            </h4>
             <p className="font-light text-sm text-gray text-opacity-60">
-              Shop now and pay in interest free installments.
+              {lang === "en"
+                ? "Shop now and pay in interest free installments."
+                : "تسوق الآن وادفع بأقساط بدون فوائد."}
             </p>
           </div>
         </div>

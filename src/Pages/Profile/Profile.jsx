@@ -5,6 +5,7 @@ import { AppContext, route } from "../../App";
 import { useContext } from "react";
 import { useNavigate } from "react-router";
 import { toast } from "react-hot-toast";
+import MyAdresses from "./MyAdresses";
 const Profile = () => {
   const data = JSON.parse(localStorage.getItem("data"));
   const token = localStorage.getItem("token");
@@ -64,6 +65,7 @@ const Profile = () => {
         </div>
       </div>
       <MyProducts />
+      <MyAdresses />
     </div>
   );
 };

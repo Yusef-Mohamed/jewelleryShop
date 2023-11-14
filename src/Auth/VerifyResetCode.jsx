@@ -6,7 +6,7 @@ import { toast } from "react-hot-toast";
 
 function VerifyResetCode() {
   const [code, setCode] = useState("");
-  const { setIsLoading } = useContext(AppContext);
+  const { setIsLoading, lang } = useContext(AppContext);
 
   const nav = useNavigate();
   let handel = async function (e) {
@@ -27,9 +27,9 @@ function VerifyResetCode() {
   return (
     <div className="form">
       <form onSubmit={handel}>
-        <h1>Verify Reset Code</h1>
+        <h1>{lang === "en" ? "Verify Reset Code" : "رمز التاكيد"}</h1>
         <div>
-          <label>Code :</label>
+          <label htmlFor="email">{lang === "en" ? "Code" : "الرمز"} : *</label>
           <input
             type="text"
             min={6}
@@ -39,7 +39,7 @@ function VerifyResetCode() {
           />
         </div>
         <button>
-          <>Submit</>
+          <>{lang === "en" ? "Submit" : "ارسال"}</>
         </button>
       </form>
     </div>

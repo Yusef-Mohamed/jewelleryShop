@@ -1,57 +1,68 @@
-import { useEffect, useState } from "react";
-import { route } from "../../App";
+import { useContext, useEffect, useState } from "react";
+import { AppContext, route } from "../../App";
+import axios from "axios";
+import ProfileProduct from "../../components/ProfileProduct";
 
 const MyProducts = () => {
-  const [isLoading, setIsLoading] = useState(false);
-  const [products, setProducts] = useState([]);
-
+  const { lang } = useContext(AppContext);
+  const [order, setOrder] = useState([]);
   const token = localStorage.getItem("token");
   useEffect(() => {
-    setIsLoading(true);
-    fetch(`${route}store/products/MyProducts`, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    })
-      .then((res) => res.json())
-      .then((data) => {
-        if (data.data) {
-          setProducts(data.data);
-        }
+    axios
+      .get(`${route}/api/v1/orders`, {
+        headers: {
+          Authorization: "Bearer " + token,
+        },
       })
-      .finally(() => setIsLoading(false));
+      .then((res) => {
+        setOrder(res.data.data);
+      });
   }, []);
 
   return (
     <div className="bg-dark border rounded-xl p-4 border-slate-300 my-10">
-      <h1 className="text-2xl text-gold bg-lightGold w-fit px-5 py-3 pb-4 rounded-2xl">
-        مشترياتي
+      <h1 className="text-2xl mb-4 text-center font-semibold">
+        {lang === "en" ? "My orders" : "طلباتي"}
       </h1>
-      <div className=" sm:p-5 rounded-2xl border border-slate-300 my-8">
-        {products.map((item) => (
+      <div className="overflow-x-auto md:w-full md:max-w-full ">
+        {order.map((order) => (
           <div
-            key={item._id}
-            className="border-b  border-b-sla3border-slate-300 p-4 flex justify-center items-center flex-col gap-4 sm:flex-row sm:justify-between"
+            key={order.id}
+            className="my-2 border-slate-300 border rounded-xl"
           >
-            <div className="flex items-center gap-4">
-              <img
-                src={item.imageCover}
-                className="w-[60px]"
-                alt=""
-                style={{ aspectRatio: "6/4" }}
-              />
-              <h2>{item?.title}</h2>
+            {/* {order.shippingAddress ? (
+              <div className="py-4">{order.shippingAddress.city}</div>
+            ) : (
+              <div className="py-4">Not Found</div>
+            )} */}
+            <h2 className="text-center text-2xl my-4 font-semibold">
+              {lang === "en" ? "Order products" : "منتجات الطلب"}{" "}
+            </h2>
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+              {order?.cartItems?.map((e, ind) => (
+                <ProfileProduct e={e} key={ind} />
+              ))}
             </div>
-            <a
-              href={item.pdf}
-              download={item.title}
-              className="flex items-center "
-            >
-              <div className="px-2 gap-2 flex justify-center items-center rounded-full bg-lightGold text-gold cursor-pointer mr-5 h-8">
-                <i className="fa-solid fa-download"></i>
-                تحميل
+            <div className="flex gap-8 justify-between text-xl font-semibold p-4">
+              <div>
+                {lang === "en" ? "Order total price" : "السعر الكلي للطلب"} :{" "}
+                <span className="text-rose-500 font-bold">
+                  {order.totalOrderPrice}$
+                </span>
               </div>
-            </a>
+              <div>
+                {lang === "en" ? "Delivery" : "التوصيل"} :
+                <span className="text-green-500 font-bold">
+                  {order.isDelivered
+                    ? lang === "en"
+                      ? "Done"
+                      : "تم التوصيل"
+                    : lang === "en"
+                    ? "On progress"
+                    : "يتم الشحن الان"}
+                </span>
+              </div>
+            </div>
           </div>
         ))}
       </div>

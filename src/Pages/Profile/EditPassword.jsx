@@ -6,7 +6,7 @@ import { AiFillCloseCircle } from "react-icons/ai";
 
 const EditPassword = () => {
   const [isOpen, setIsOpen] = useState(false);
-  const { setIsLoading } = useContext(AppContext);
+  const { setIsLoading, lang } = useContext(AppContext);
   const [current, setCurrent] = useState("");
   const [password, setPassword] = useState("");
   const [confirm, setConfirm] = useState("");
@@ -56,7 +56,9 @@ const EditPassword = () => {
                 <AiFillCloseCircle size={30} />
               </div>
               <div>
-                <label htmlFor="currentPassword">Current Password:</label>
+                <label htmlFor="currentPassword">
+                  {lang === "en" ? "Current Password" : "كلمة المرور الحالية"} :
+                </label>
                 <input
                   type="password"
                   required
@@ -66,7 +68,9 @@ const EditPassword = () => {
                 />
               </div>
               <div>
-                <label htmlFor="newPassword">new Password:</label>
+                <label htmlFor="newPassword">
+                  {lang === "en" ? "New Password" : "كلمة المرور الجديدة"} :
+                </label>
                 <input
                   type="password"
                   required
@@ -76,7 +80,9 @@ const EditPassword = () => {
                 />
               </div>
               <div>
-                <label htmlFor="confirmPassword">Confirm Password:</label>
+                <label htmlFor="confirmPassword">
+                  {lang === "en" ? "Confirm Password" : "تاكيد كلمة المرور"} :
+                </label>
                 <input
                   type="password"
                   required
@@ -86,7 +92,10 @@ const EditPassword = () => {
                 />
               </div>
 
-              <button type="submit">Update</button>
+              <button type="submit">
+                {" "}
+                {lang === "en" ? "Update" : "تحديث  "}
+              </button>
             </form>
           </div>
         </div>
@@ -95,7 +104,7 @@ const EditPassword = () => {
         className="cursor-pointer flex items-center justify-center w-[200px] h-[40px] bg-blue text-white gap-4 font-semibold rounded-2xl"
         onClick={() => setIsOpen(true)}
       >
-        Edit Password
+        {lang === "en" ? "Edit Password" : "تعديل كملة المرور"}
       </div>
     </div>
   );

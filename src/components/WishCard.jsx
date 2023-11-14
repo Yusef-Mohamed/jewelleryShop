@@ -5,7 +5,7 @@ import { AppContext, route } from "../App";
 import { BsTrash3Fill } from "react-icons/bs";
 import { Link } from "react-router-dom";
 const WishCard = ({ onClose, item }) => {
-  const { setIsLoading, setUpdate } = useContext(AppContext);
+  const { setIsLoading, setUpdate, lang } = useContext(AppContext);
   const token = localStorage.getItem("token");
 
   const deleteFromCart = function () {
@@ -21,7 +21,6 @@ const WishCard = ({ onClose, item }) => {
         setUpdate((prev) => prev + 1);
       })
       .catch((err) => {
-        console.log(err);
         if (err.response.status == 401) {
           toast.error("You must login before add items to Shoping Cart");
         }
@@ -30,16 +29,16 @@ const WishCard = ({ onClose, item }) => {
   };
   return (
     <>
-      <div className="flex my-4 border-b border-b-slate-300 pb-4">
-        <img src={item?.imageCover} alt="" />
+      <div className="flex my-4 sm:flex-row flex-col border-b border-b-slate-300 pb-4">
+        <img src={item?.imageCover} className="w-32" alt="" />
         <div className="flex flex-col w-full">
           <div className="flex gap-2 justify-between">
             <Link
               to={`/product/${item?._id}`}
               onClick={() => onClose(false)}
-              className="font-semibold underline hover:text-sky-600 transition-colors text-sm line-clamp-1"
+              className="font-semibold underline hover:text-sky-600 mx-4  transition-colors  line-clamp-1"
             >
-              {item?.title}
+              {lang === "en" ? item?.title_en : item?.title_ar}
             </Link>
             <span className="text-sm whitespace-nowrap font-semibold">
               $

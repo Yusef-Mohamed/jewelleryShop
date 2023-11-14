@@ -7,7 +7,7 @@ import { toast } from "react-hot-toast";
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const { setIsLoading, setUpdate } = useContext(AppContext);
+  const { setIsLoading, setUpdate, lang } = useContext(AppContext);
   const nav = useNavigate();
   const handelSubmit = function (e) {
     e.preventDefault();
@@ -37,11 +37,13 @@ const Login = () => {
   };
 
   return (
-    <div className="form">
+    <div className="form my-12">
       <form onSubmit={(e) => handelSubmit(e)}>
-        <h1>Login</h1>
+        <h1>{lang === "en" ? "Login" : "تسجيل الدخول"}</h1>
         <div>
-          <label htmlFor="email">Email</label>
+          <label htmlFor="email">
+            {lang === "en" ? "Email" : "البريد الالكتروني"} : *
+          </label>
           <input
             type="email"
             onChange={(e) => setEmail(e.target.value)}
@@ -49,7 +51,9 @@ const Login = () => {
           />
         </div>
         <div>
-          <label htmlFor="password">Password</label>
+          <label htmlFor="password">
+            {lang === "en" ? "Password" : "كلمة المرور"} : *
+          </label>
           <input
             type="password"
             required
@@ -57,10 +61,14 @@ const Login = () => {
             id="password"
           />
         </div>
-        <button>Login</button>
-        <p>
-          You <Link to="/forgotPassword">Forget password</Link>
-          ,Or <Link to="/register">Register</Link>
+        <button> {lang === "en" ? "Login" : "تسجيل الدخول"}</button>
+        <p className="flex gap-4 justify-center ">
+          <Link to="/register" className="font-semibold">
+            {lang === "en" ? "Register" : "تسجيل حساب جديد"}
+          </Link>
+          <Link to="/forgotPassword" className="font-semibold">
+            {lang === "en" ? "Forget password" : "نسيت كلمة المرور"}
+          </Link>
         </p>
       </form>
     </div>

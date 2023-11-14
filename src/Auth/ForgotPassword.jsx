@@ -6,7 +6,7 @@ import { toast } from "react-hot-toast";
 
 function ForgotPassword() {
   const [email, setEmail] = useState("");
-  const { setIsLoading } = useContext(AppContext);
+  const { setIsLoading, lang } = useContext(AppContext);
 
   const nav = useNavigate();
   let handel = async function (e) {
@@ -27,9 +27,11 @@ function ForgotPassword() {
   return (
     <div className="form">
       <form onSubmit={handel}>
-        <h1>Forgot Password</h1>
+        <h1>{lang === "en" ? "Forgot Password" : "نسيت كلمة المرور"}</h1>
         <div>
-          <label>Email :</label>
+          <label htmlFor="email">
+            {lang === "en" ? "Email" : "البريد الالكتروني"} : *
+          </label>
           <input
             type="email"
             min={4}
@@ -39,7 +41,7 @@ function ForgotPassword() {
           />
         </div>
 
-        <button>Submit</button>
+        <button>{lang === "en" ? "Submit" : "ارسال"}</button>
       </form>
     </div>
   );
